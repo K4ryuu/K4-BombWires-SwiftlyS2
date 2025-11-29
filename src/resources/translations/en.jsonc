@@ -1,0 +1,18 @@
+{
+	// General
+	"k4.general.prefix": "[silver][ [lime]BombWires [silver]]",
+
+	// Menu
+	"k4.menu.title": "Select a wire color",
+	"k4.menu.helper_t": "Instant defuse when same color picked on both sides. Ignore this menu for a random color selection.",
+	"k4.menu.helper_ct": "Instant defuse when same color picked on both sides. Ignore this menu for a regular defuse.",
+	"k4.menu.red": "Red",
+	"k4.menu.blue": "Blue",
+	"k4.menu.yellow": "Yellow",
+	"k4.menu.green": "Green",
+
+	// Chat messages
+	"k4.chat.success": "{0} [lime]has cut the {1} [lime]wire, which is correct! The bomb has been defused instantly.",
+	"k4.chat.failure": "{0} [lightred]has cut the {1} [lightred]wire, which is incorrect! The bomb has exploded.",
+	"k4.chat.select": "[silver]You have selected the {0} [silver]wire."
+}
