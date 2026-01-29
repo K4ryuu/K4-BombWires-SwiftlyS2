@@ -30,7 +30,7 @@ public sealed class PluginConfig
 	public int MenuTimeout { get; set; } = 5;
 }
 
-[PluginMetadata(Id = "k4.bombwires", Version = "1.0.0", Name = "K4 - Bomb Wires", Author = "K4ryuu", Description = "A bomb defuse minigame where CT must guess the correct wire color set by T.")]
+[PluginMetadata(Id = "k4.bombwires", Version = "1.0.1", Name = "K4 - Bomb Wires", Author = "K4ryuu", Description = "A bomb defuse minigame where CT must guess the correct wire color set by T.")]
 public sealed class Plugin(ISwiftlyCore core) : BasePlugin(core)
 {
 	public static new ISwiftlyCore Core { get; private set; } = null!;
@@ -171,13 +171,7 @@ public sealed class Plugin(ISwiftlyCore core) : BasePlugin(core)
 		var localizer = Core.Translation.GetPlayerLocalizer(player);
 
 		// Helper message
-		Core.Scheduler.NextWorldUpdate(() =>
-		{
-			if (player.IsValid)
-			{
-				player.SendChat($" {localizer["k4.general.prefix"]} {localizer[planting ? "k4.menu.helper_t" : "k4.menu.helper_ct"]}");
-			}
-		});
+		player.SendChatAsync($" {localizer["k4.general.prefix"]} {localizer[planting ? "k4.menu.helper_t" : "k4.menu.helper_ct"]}");
 
 		var menuBuilder = Core.MenusAPI
 			.CreateBuilder()
@@ -254,7 +248,7 @@ public sealed class Plugin(ISwiftlyCore core) : BasePlugin(core)
 		{
 			// T is setting the wire
 			_currentWire = selectedWire;
-			player.SendChat($" {localizer["k4.general.prefix"]} {localizer["k4.chat.select", wireName]}");
+			player.SendChatAsync($" {localizer["k4.general.prefix"]} {localizer["k4.chat.select", wireName]}");
 		}
 		else
 		{
@@ -268,14 +262,14 @@ public sealed class Plugin(ISwiftlyCore core) : BasePlugin(core)
 			if (_currentWire == selectedWire)
 			{
 				// Correct! Instant defuse
-				Core.PlayerManager.SendChat($" {localizer["k4.general.prefix"]} {localizer["k4.chat.success", playerName, wireName]}");
+				Core.PlayerManager.SendChatAsync($" {localizer["k4.general.prefix"]} {localizer["k4.chat.success", playerName, wireName]}");
 				bomb.DefuseCountDown.Value = 0;
 				bomb.DefuseCountDownUpdated();
 			}
 			else
 			{
 				// Wrong! Instant explosion
-				Core.PlayerManager.SendChat($" {localizer["k4.general.prefix"]} {localizer["k4.chat.failure", playerName, wireName]}");
+				Core.PlayerManager.SendChatAsync($" {localizer["k4.general.prefix"]} {localizer["k4.chat.failure", playerName, wireName]}");
 				bomb.C4Blow.Value = 1.0f;
 				bomb.C4BlowUpdated();
 			}
