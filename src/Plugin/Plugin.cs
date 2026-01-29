@@ -28,6 +28,11 @@ public sealed class PluginConfig
 	/// Timeout in seconds for the wire selection menu
 	/// </summary>
 	public int MenuTimeout { get; set; } = 5;
+
+	/// <summary>
+	/// If enabled, the order of wire colors in the menu will be randomized.
+	/// </summary>
+	public bool RandomizeWireOrder { get; set; } = false;
 }
 
 [PluginMetadata(Id = "k4.bombwires", Version = "1.0.1", Name = "K4 - Bomb Wires", Author = "K4ryuu", Description = "A bomb defuse minigame where CT must guess the correct wire color set by T.")]
@@ -183,41 +188,29 @@ public sealed class Plugin(ISwiftlyCore core) : BasePlugin(core)
 			.SetSelectButton(KeyBind.Space)
 			.SetPlayerFrozen(false);
 
-		// Red wire
-		var redBtn = new ButtonMenuOption($"<font color='#FF0000'>{localizer["k4.menu.red"]}</font>");
-		redBtn.Click += (_, _) =>
+		var wireOptions = new List<(WireColor color, string text)>
 		{
-			HandleWireSelection(player, WireColor.Red, planting, localizer);
-			return ValueTask.CompletedTask;
+			(WireColor.Red, $"<font color='#FF0000'>{localizer["k4.menu.red"]}</font>"),
+			(WireColor.Blue, $"<font color='#00BFFF'>{localizer["k4.menu.blue"]}</font>"),
+			(WireColor.Yellow, $"<font color='#FFFF00'>{localizer["k4.menu.yellow"]}</font>"),
+			(WireColor.Green, $"<font color='#00FF00'>{localizer["k4.menu.green"]}</font>")
 		};
-		menuBuilder.AddOption(redBtn);
 
-		// Blue wire
-		var blueBtn = new ButtonMenuOption($"<font color='#00BFFF'>{localizer["k4.menu.blue"]}</font>");
-		blueBtn.Click += (_, _) =>
+		if (_config.RandomizeWireOrder)
 		{
-			HandleWireSelection(player, WireColor.Blue, planting, localizer);
-			return ValueTask.CompletedTask;
-		};
-		menuBuilder.AddOption(blueBtn);
+			wireOptions = wireOptions.OrderBy(_ => Random.Shared.Next()).ToList();
+		}
 
-		// Yellow wire
-		var yellowBtn = new ButtonMenuOption($"<font color='#FFFF00'>{localizer["k4.menu.yellow"]}</font>");
-		yellowBtn.Click += (_, _) =>
+		foreach (var (color, text) in wireOptions)
 		{
-			HandleWireSelection(player, WireColor.Yellow, planting, localizer);
-			return ValueTask.CompletedTask;
-		};
-		menuBuilder.AddOption(yellowBtn);
-
-		// Green wire
-		var greenBtn = new ButtonMenuOption($"<font color='#00FF00'>{localizer["k4.menu.green"]}</font>");
-		greenBtn.Click += (_, _) =>
-		{
-			HandleWireSelection(player, WireColor.Green, planting, localizer);
-			return ValueTask.CompletedTask;
-		};
-		menuBuilder.AddOption(greenBtn);
+			var button = new ButtonMenuOption(text);
+			button.Click += (_, _) =>
+			{
+				HandleWireSelection(player, color, planting, localizer);
+				return ValueTask.CompletedTask;
+			};
+			menuBuilder.AddOption(button);
+		}
 
 		_wireMenu = menuBuilder.Build();
 		Core.MenusAPI.OpenMenuForPlayer(player, _wireMenu);
