@@ -35,7 +35,7 @@ public sealed class PluginConfig
 	public bool RandomizeWireOrder { get; set; } = false;
 }
 
-[PluginMetadata(Id = "k4.bombwires", Version = "1.0.1", Name = "K4 - Bomb Wires", Author = "K4ryuu", Description = "A bomb defuse minigame where CT must guess the correct wire color set by T.")]
+[PluginMetadata(Id = "k4.bombwires", Version = "1.0.1", Name = "K4 - Bomb Wires", Author = "K4ryuu", Description = "A bomb defuse minigame where CT optionally can guess the correct wire color set by T.")]
 public sealed class Plugin(ISwiftlyCore core) : BasePlugin(core)
 {
 	public static new ISwiftlyCore Core { get; private set; } = null!;
